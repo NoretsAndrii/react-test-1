@@ -1,27 +1,29 @@
-import { useState } from "react";
-
 import "./App.css";
-import axios from "axios";
 import UsersTable from "../UsersTable/UsersTable";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsersDataLarge, fetchUsersDataSmall } from "../redux/userDataOps";
+import { selectUsersData } from "../redux/usersDataSlice";
 
-const fetchSmallData = async () => {
-  const response = await axios.get(
-    " http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}"
-  );
-  console.log(response.data);
-  return response.data;
-};
+// const fetchSmallData = async () => {
+//   const response = await axios.get(
+//     " http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}"
+//   );
+//   console.log(response.data);
+//   return response.data;
+// };
 
-const fetchLargeData = async () => {
-  const response = await axios.get(
-    " http://www.filltext.com/?rows=1000&id={number|1000}&firstName={firstName}&delay=3&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}"
-  );
-  console.log(response.data);
-  return response.data;
-};
+// const fetchLargeData = async () => {
+//   const response = await axios.get(
+//     " http://www.filltext.com/?rows=1000&id={number|1000}&firstName={firstName}&delay=3&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}"
+//   );
+//   console.log(response.data);
+//   return response.data;
+// };
 
 export default function App() {
-  const [usersData, setUsersData] = useState([]);
+  // const [usersData, setUsersData] = useState([]);
+  const users = useSelector(selectUsersData);
+  const dispatch = useDispatch();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -31,11 +33,9 @@ export default function App() {
     const getData = async () => {
       try {
         if (selectValue === "small") {
-          const data = await fetchSmallData();
-          setUsersData(data);
+          dispatch(fetchUsersDataSmall());
         } else {
-          const data = await fetchLargeData();
-          setUsersData(data);
+          dispatch(fetchUsersDataLarge());
         }
       } catch (error) {
         console.log(error);
@@ -45,7 +45,7 @@ export default function App() {
     getData();
   }
 
-  let users = usersData.toSorted((a, b) => a.id - b.id);
+  // let users = usersData.toSorted((a, b) => a.id - b.id);
 
   return (
     <>
@@ -57,7 +57,7 @@ export default function App() {
         </select>
         <button type="submit">Download</button>
       </form>
-      {usersData.length !== 0 && <UsersTable usersData={users} />}
+      {users.length !== 0 && <UsersTable />}
     </>
   );
 }

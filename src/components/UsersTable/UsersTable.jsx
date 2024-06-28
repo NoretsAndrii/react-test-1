@@ -1,72 +1,31 @@
-import { useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import { selectFilteredUsersData } from "../redux/usersDataSlice";
+import { selectTypeSettings, setFilter, setType } from "../redux/filtersSlice";
 
-export default function UsersTable({ usersData }) {
-  const [isSorted, setIsSorted] = useState({
-    id: true,
-    firstName: true,
-    lastName: true,
-    email: true,
-    phone: true,
-  });
-  const [users, setUsers] = useState(usersData);
+export default function UsersTable() {
+  const users = useSelector(selectFilteredUsersData);
+  const isSorted = useSelector(selectTypeSettings);
+  const dispatch = useDispatch();
 
   const handleClick = (type) => {
-    if (type === "id") {
-      if (isSorted[type]) {
-        setIsSorted((prev) => {
-          return { ...prev, [type]: false };
-        });
-        setUsers(usersData.toSorted((a, b) => b[type] - a[type]));
-      } else {
-        setIsSorted((prev) => {
-          return { ...prev, [type]: true };
-        });
-        setUsers(usersData.toSorted((a, b) => a[type] - b[type]));
-      }
-    }
-    if (type === "firstName" || type === "lastName" || type === "email") {
-      if (isSorted[type]) {
-        setIsSorted((prev) => {
-          return { ...prev, [type]: false };
-        });
-        setUsers(usersData.toSorted((a, b) => a[type].localeCompare(b[type])));
-      } else {
-        setIsSorted((prev) => {
-          return { ...prev, [type]: true };
-        });
-        setUsers(usersData.toSorted((a, b) => b[type].localeCompare(a[type])));
-      }
-    }
-    if (type === "phone") {
-      if (!isSorted[type]) {
-        setIsSorted((prev) => {
-          return { ...prev, [type]: true };
-        });
-        setUsers(
-          usersData.toSorted((a, b) => {
-            const cleanA = a[type].replace(/[^\d]/g, "");
-            const cleanB = b[type].replace(/[^\d]/g, "");
-            return cleanA.localeCompare(cleanB);
-          })
-        );
-      } else {
-        setIsSorted((prev) => {
-          return { ...prev, [type]: false };
-        });
-        setUsers(
-          usersData.toSorted((a, b) => {
-            const cleanA = a[type].replace(/[^\d]/g, "");
-            const cleanB = b[type].replace(/[^\d]/g, "");
-            return cleanB.localeCompare(cleanA);
-          })
-        );
-      }
-    }
+    dispatch(setType(type));
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const value = form.elements.search.value.trim();
+    dispatch(setFilter(value));
+    form.reset();
   };
 
   return (
     <>
+      <form onSubmit={handleSearch}>
+        <input type="text" name="search" />
+        <button type="submit">Search</button>
+      </form>
       <div>UsersTable</div>
       <table>
         <thead>
