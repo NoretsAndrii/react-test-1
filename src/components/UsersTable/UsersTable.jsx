@@ -1,9 +1,20 @@
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
+import { Pagination } from "@mui/material";
+
 import { selectFilteredUsersData } from "../redux/usersDataSlice";
-import { selectTypeSettings, setFilter, setType } from "../redux/filtersSlice";
+import {
+  selectCurrentPage,
+  selectTypeSettings,
+  setCurrentPage,
+  setFilter,
+  setType,
+} from "../redux/filtersSlice";
+
+const itemsPerPage = 50;
 
 export default function UsersTable() {
+  const currentPage = useSelector(selectCurrentPage);
   const users = useSelector(selectFilteredUsersData);
   const isSorted = useSelector(selectTypeSettings);
   const dispatch = useDispatch();
@@ -19,6 +30,15 @@ export default function UsersTable() {
     dispatch(setFilter(value));
     form.reset();
   };
+
+  const handleChangePage = (event, newPage) => {
+    dispatch(setCurrentPage(newPage));
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = users.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(users.length / itemsPerPage);
 
   return (
     <>
@@ -48,7 +68,7 @@ export default function UsersTable() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => {
+          {currentItems.map((user) => {
             return (
               <tr key={user.phone}>
                 <td>{user.id}</td>
@@ -61,6 +81,14 @@ export default function UsersTable() {
           })}
         </tbody>
       </table>
+
+      {totalPages > 1 && (
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handleChangePage}
+        />
+      )}
     </>
   );
 }
