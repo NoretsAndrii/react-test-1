@@ -1,6 +1,7 @@
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "@mui/material";
+import css from "./UsersTable.module.css";
 
 import {
   selectFilteredUsersData,
@@ -11,10 +12,10 @@ import {
   selectCurrentPage,
   selectTypeSettings,
   setCurrentPage,
-  setFilter,
   setType,
 } from "../redux/filtersSlice";
 import UserInfo from "../UserInfo/UserInfo";
+import SearchForm from "../SearchForm/SearchForm";
 
 const itemsPerPage = 50;
 
@@ -27,14 +28,6 @@ export default function UsersTable() {
 
   const handleClick = (type) => {
     dispatch(setType(type));
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const value = form.elements.search.value.trim();
-    dispatch(setFilter(value));
-    form.reset();
   };
 
   const handleChangePage = (e, newPage) => {
@@ -52,12 +45,9 @@ export default function UsersTable() {
 
   return (
     <>
-      <form onSubmit={handleSearch}>
-        <input type="text" name="search" />
-        <button type="submit">Search</button>
-      </form>
-      <div>UsersTable</div>
-      <table>
+      <SearchForm />
+      <h3>UsersTable</h3>
+      <table className={css.table}>
         <thead>
           <tr>
             <th onClick={() => handleClick("id")}>
@@ -81,11 +71,11 @@ export default function UsersTable() {
           {currentItems.map((user) => {
             return (
               <tr key={user.phone} onClick={() => handleOnUserClick(user)}>
-                <td>{user.id}</td>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
+                <td style={{ width: "50px" }}>{user.id}</td>
+                <td style={{ width: "140px" }}>{user.firstName}</td>
+                <td style={{ width: "140px" }}>{user.lastName}</td>
+                <td style={{ width: "230px" }}>{user.email}</td>
+                <td style={{ width: "150px" }}>{user.phone}</td>
               </tr>
             );
           })}
@@ -97,6 +87,10 @@ export default function UsersTable() {
           count={totalPages}
           page={currentPage}
           onChange={handleChangePage}
+          sx={{
+            marginBottom: "24px",
+            "& .MuiPagination-ul": { justifyContent: "center" },
+          }}
         />
       )}
       {userInfo && <UserInfo />}
