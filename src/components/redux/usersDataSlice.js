@@ -3,13 +3,14 @@ import { fetchUsersDataLarge, fetchUsersDataSmall } from "./userDataOps";
 import { selectSearch, selectType, selectTypeSettings } from "./filtersSlice";
 
 const handlePending = (state) => {
+  state.items = [];
   state.userInfo = null;
-  //   state.loading = true;
+  state.isLoading = true;
 };
 
-const handleRejected = () => {
-  //   state.loading = false;
-  //   state.error = action.payload;
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.isError = action.payload;
 };
 
 const usersDataSlice = createSlice({
@@ -17,6 +18,8 @@ const usersDataSlice = createSlice({
   initialState: {
     items: [],
     userInfo: null,
+    isLoading: false,
+    isError: false,
   },
   reducers: {
     setUserInfo(state, action) {
@@ -27,15 +30,15 @@ const usersDataSlice = createSlice({
     builder
       .addCase(fetchUsersDataSmall.pending, handlePending)
       .addCase(fetchUsersDataSmall.fulfilled, (state, action) => {
-        // state.loading = false;
-        // state.error = false;
+        state.isLoading = false;
+        state.isError = false;
         state.items = action.payload;
       })
       .addCase(fetchUsersDataSmall.rejected, handleRejected)
       .addCase(fetchUsersDataLarge.pending, handlePending)
       .addCase(fetchUsersDataLarge.fulfilled, (state, action) => {
-        // state.loading = false;
-        // state.error = false;
+        state.isLoading = false;
+        state.isError = false;
         state.items = action.payload;
       })
       .addCase(fetchUsersDataLarge.rejected, handleRejected);
@@ -48,6 +51,8 @@ export const { setUserInfo } = usersDataSlice.actions;
 
 export const selectUsersData = (state) => state.users.items;
 export const selectUserInfo = (state) => state.users.userInfo;
+export const selectIsLoading = (state) => state.users.isLoading;
+export const selectIsError = (state) => state.users.isError;
 
 export const selectFilteredUsers = createSelector(
   [selectUsersData, selectSearch],
