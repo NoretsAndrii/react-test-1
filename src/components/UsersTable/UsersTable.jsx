@@ -2,7 +2,11 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "@mui/material";
 
-import { selectFilteredUsersData } from "../redux/usersDataSlice";
+import {
+  selectFilteredUsersData,
+  selectUserInfo,
+  setUserInfo,
+} from "../redux/usersDataSlice";
 import {
   selectCurrentPage,
   selectTypeSettings,
@@ -10,6 +14,7 @@ import {
   setFilter,
   setType,
 } from "../redux/filtersSlice";
+import UserInfo from "../UserInfo/UserInfo";
 
 const itemsPerPage = 50;
 
@@ -17,6 +22,7 @@ export default function UsersTable() {
   const currentPage = useSelector(selectCurrentPage);
   const users = useSelector(selectFilteredUsersData);
   const isSorted = useSelector(selectTypeSettings);
+  const userInfo = useSelector(selectUserInfo);
   const dispatch = useDispatch();
 
   const handleClick = (type) => {
@@ -31,7 +37,7 @@ export default function UsersTable() {
     form.reset();
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (e, newPage) => {
     dispatch(setCurrentPage(newPage));
   };
 
@@ -39,6 +45,10 @@ export default function UsersTable() {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = users.slice(startIndex, endIndex);
   const totalPages = Math.ceil(users.length / itemsPerPage);
+
+  const handleOnUserClick = (user) => {
+    dispatch(setUserInfo(user));
+  };
 
   return (
     <>
@@ -70,7 +80,7 @@ export default function UsersTable() {
         <tbody>
           {currentItems.map((user) => {
             return (
-              <tr key={user.phone}>
+              <tr key={user.phone} onClick={() => handleOnUserClick(user)}>
                 <td>{user.id}</td>
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
@@ -89,6 +99,7 @@ export default function UsersTable() {
           onChange={handleChangePage}
         />
       )}
+      {userInfo && <UserInfo />}
     </>
   );
 }

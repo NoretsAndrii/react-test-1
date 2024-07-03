@@ -2,7 +2,8 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { fetchUsersDataLarge, fetchUsersDataSmall } from "./userDataOps";
 import { selectSearch, selectType, selectTypeSettings } from "./filtersSlice";
 
-const handlePending = () => {
+const handlePending = (state) => {
+  state.userInfo = null;
   //   state.loading = true;
 };
 
@@ -13,7 +14,15 @@ const handleRejected = () => {
 
 const usersDataSlice = createSlice({
   name: "users",
-  initialState: { items: [] },
+  initialState: {
+    items: [],
+    userInfo: null,
+  },
+  reducers: {
+    setUserInfo(state, action) {
+      state.userInfo = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsersDataSmall.pending, handlePending)
@@ -35,7 +44,10 @@ const usersDataSlice = createSlice({
 
 export const userDataReducer = usersDataSlice.reducer;
 
+export const { setUserInfo } = usersDataSlice.actions;
+
 export const selectUsersData = (state) => state.users.items;
+export const selectUserInfo = (state) => state.users.userInfo;
 
 export const selectFilteredUsers = createSelector(
   [selectUsersData, selectSearch],
