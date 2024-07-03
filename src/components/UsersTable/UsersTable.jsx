@@ -7,13 +7,13 @@ import {
   selectFilteredUsersData,
   selectUserInfo,
   setUserInfo,
-} from "../redux/usersDataSlice";
+} from "../../redux/usersDataSlice";
 import {
   selectCurrentPage,
   selectTypeSettings,
   setCurrentPage,
   setType,
-} from "../redux/filtersSlice";
+} from "../../redux/filtersSlice";
 import UserInfo from "../UserInfo/UserInfo";
 import SearchForm from "../SearchForm/SearchForm";
 

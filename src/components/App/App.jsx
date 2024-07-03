@@ -1,12 +1,15 @@
 import "./App.css";
 import UsersTable from "../UsersTable/UsersTable";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsersDataLarge, fetchUsersDataSmall } from "../redux/userDataOps";
+import {
+  fetchUsersDataLarge,
+  fetchUsersDataSmall,
+} from "../../redux/userDataOps";
 import {
   selectIsError,
   selectIsLoading,
   selectUsersData,
-} from "../redux/usersDataSlice";
+} from "../../redux/usersDataSlice";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 

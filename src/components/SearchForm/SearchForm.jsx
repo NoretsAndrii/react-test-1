@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { setFilter } from "../redux/filtersSlice";
+import { setFilter } from "../../redux/filtersSlice";
 
 export default function SearchForm() {
   const dispatch = useDispatch();

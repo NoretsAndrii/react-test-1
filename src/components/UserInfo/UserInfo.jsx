@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectUserInfo } from "../redux/usersDataSlice";
+import { selectUserInfo } from "../../redux/usersDataSlice";
 import css from "./UserInfo.module.css";
 
 export default function UserInfo() {
